@@ -45,11 +45,14 @@ export type Movie = {
   backdrop_path: string;
   genre_ids: number[];
   id: number;
+  name?: string;
+
   original_language: string;
   original_title: string;
   overview: string;
   popularity: number;
   poster_path: string;
+  first_air_date?: string;
   release_date: string; // ISO format YYYY-MM-DD
   title: string;
   video: boolean;

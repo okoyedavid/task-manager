@@ -17,9 +17,18 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
 
+  async function handleDelete() {
+    const res = await fetch(`http://localhost:4000/movies/${movie.id}`, {
+      method: "DELETE",
+    });
+
+    const data = await res.json();
+    console.log("successfully deleted movie", data);
+  }
+
   return (
     <div
-      className={`bg-green-950 rounded-lg border hover:bg-green-900 overflow-hidden hover:shadow-lg transition-all duration-200 group`}
+      className={`rounded-lg border bg-black/40 backdrop-blur-lg overflow-hidden  transition-all duration-200 group shadow-[0_0_2px_2px_rgba(0,255,0,0.8)] hover:shadow-[0_0_10px_4px_rgba(0,255,0,0.9)]`}
     >
       {/* Movie Poster */}
       <div className="relative aspect-square overflow-hidden">
@@ -29,7 +38,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
             movie.poster_path || movie.backdrop_path
           }`}
           alt={movie.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+          className="group-hover:scale-105 transition-transform duration-200"
         />
 
         {/* Menu Button */}
@@ -56,6 +65,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                 <span>Edit</span>
               </button>
               <button
+                onClick={handleDelete}
                 className={`w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-500`}
               >
                 <Trash2 className="w-4 h-4" />
@@ -75,9 +85,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       {/* Movie Info */}
       <div className="p-4">
         <h3 className={`font-semibold text-white mb-1 line-clamp-1`}>
-          {movie.title}
+          {movie.title || movie.name}
         </h3>
-        <p className={`text-sm text-green-50 mb-2`}>{movie.release_date}</p>
+        <p className={`text-sm text-green-50 mb-2`}>
+          {movie.first_air_date || movie?.release_date}
+        </p>
 
         {/* User Rating (if watched) */}
         {movie.status === "watched" && movie.vote_average && (

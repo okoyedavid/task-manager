@@ -19,6 +19,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [type, setType] = useState<"movie" | "tv">("movie");
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [formData, setFormData] = useState({
     status: "to-watch" as Movie["status"],
@@ -30,8 +31,9 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
+    setSelectedMovie(null);
     try {
-      const movies = await searchMovies(searchQuery);
+      const movies = await searchMovies(searchQuery, type);
       setSearchResults(movies);
     } catch (error) {
       console.error("Search failed:", error);
@@ -45,9 +47,13 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
     const movieData: Partial<Movie> = {
       id: selectedMovie.id,
-      title: selectedMovie.title,
+      title: selectedMovie.title || selectedMovie.name,
+      name: selectedMovie.name,
+      first_air_date: selectedMovie.first_air_date,
       poster_path: selectedMovie.poster_path,
-      release_date: String(new Date(selectedMovie.release_date).getFullYear()),
+      release_date:
+        String(new Date(selectedMovie.release_date).getFullYear()) ||
+        selectedMovie.first_air_date,
       genre_ids: [...selectedMovie.genre_ids], // In real app, map genre_ids to genre names
       vote_average: selectedMovie.vote_average,
       overview: selectedMovie.overview,
@@ -96,6 +102,14 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                 placeholder="Enter movie title..."
               />
 
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value as "movie" | "tv")}
+                className={`px-4 py-2 rounded-lg text-white border border-green-400 focus:outline-none bg-black/40 backdrop-blur-lg focus:ring-2 focus:ring-green-500`}
+              >
+                <option value={"movie"}>Movie</option>
+                <option value={"tv"}>Tv Show</option>
+              </select>
               <Button
                 onClick={handleSearch}
                 disabled={isSearching || !searchQuery.trim()}
@@ -106,7 +120,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
           </div>
 
           {/* Search Results */}
-          {searchResults.length > 0 && (
+          {searchResults.length > 0 && !selectedMovie && (
             <div className="mb-6">
               <h3 className={`text-lg font-medium text-white mb-3`}>
                 Search Results
@@ -116,11 +130,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                   <div
                     key={movie.id}
                     onClick={() => setSelectedMovie(movie)}
-                    className={`bg-black/40 backdrop-blur-2xl rounded-lg p-3 cursor-pointer border-2 transition-all ${
-                      selectedMovie?.id === movie.id
-                        ? "border-blue-500"
-                        : `border-transparent hover:border-green-400`
-                    }`}
+                    className={`bg-black/40 backdrop-blur-2xl rounded-lg p-3 cursor-pointer border-2 transition-all`}
                   >
                     <div className="flex space-x-3">
                       <Image
@@ -136,10 +146,11 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                         <h4
                           className={`font-medium text-white line-clamp-2 mb-1`}
                         >
-                          {movie.title}
+                          {movie.title || movie.name}
                         </h4>
                         <p className={`text-sm text-green-50 mb-2`}>
-                          {new Date(movie.release_date).getFullYear()}
+                          {new Date(movie.release_date).getFullYear() ||
+                            movie.first_air_date}
                         </p>
                         <div className="flex items-center space-x-1">
                           <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
@@ -157,7 +168,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
           {/* Selected Movie Details */}
           {selectedMovie && (
-            <div className="mb-6">
+            <div onClick={() => setSelectedMovie(null)} className="mb-6">
               <h3 className={`text-lg font-medium text-white mb-3`}>
                 Selected Movie
               </h3>
@@ -179,7 +190,8 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                       {selectedMovie.title}
                     </h4>
                     <p className={`text-green-50 mb-2`}>
-                      {new Date(selectedMovie.release_date).getFullYear()}
+                      {new Date(selectedMovie.release_date).getFullYear() ||
+                        selectedMovie.first_air_date}
                     </p>
                     <div className="flex items-center space-x-1 mb-3">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />

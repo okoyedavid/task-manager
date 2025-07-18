@@ -1,7 +1,10 @@
 import { Movie } from "../types";
 
-export const searchMovies = async (query: string): Promise<Movie[]> => {
-  const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
+export const searchMovies = async (
+  query: string,
+  type: "movie" | "tv"
+): Promise<Movie[]> => {
+  const url = `https://api.themoviedb.org/3/search/${type}?query=${encodeURIComponent(
     query
   )}&include_adult=true&language=en-US&page=1`;
 
