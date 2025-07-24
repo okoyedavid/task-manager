@@ -11,6 +11,7 @@ import {
   Flag,
 } from "lucide-react";
 import { ShoppingItem } from "../types";
+import Image from "next/image";
 
 interface ShoppingItemCardProps {
   item: ShoppingItem;
@@ -23,15 +24,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
   onStatusChange,
   onEdit,
 }) => {
-  const theme = "dark";
   const [showMenu, setShowMenu] = useState(false);
-
-  const cardBg = theme === "dark" ? "bg-background-dark" : "bg-white";
-  const textPrimary = theme === "dark" ? "text-white" : "text-gray-900";
-  const textSecondary = theme === "dark" ? "text-gray-400" : "text-gray-600";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
-  const hoverBg =
-    theme === "dark" ? "hover:bg-background" : "hover:bg-gray-100";
 
   const getStatusConfig = (status: ShoppingItem["status"]) => {
     switch (status) {
@@ -74,14 +67,15 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
 
   return (
     <div
-      className={`${cardBg} rounded-lg border ${borderColor} overflow-hidden hover:shadow-lg transition-all duration-200 group`}
+      className={`border border-green-400/20 bg-green-950/10 backdrop-blur-xl rounded-lg cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-200 group `}
     >
       {/* Item Image */}
       {item.image && (
         <div className="relative aspect-video overflow-hidden">
-          <img
+          <Image
             src={item.image}
             alt={item.name}
+            fill
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
           />
 
@@ -105,25 +99,25 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
       {/* Item Info */}
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className={`font-semibold ${textPrimary} line-clamp-2 flex-1`}>
+          <h3 className={`font-semibold text-white line-clamp-2 flex-1`}>
             {item.name}
           </h3>
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className={`p-1 rounded hover:${hoverBg} ${textSecondary} ml-2 relative`}
+            className={`p-1 rounded hover:bg-green-950 text-white ml-2 relative`}
           >
             <MoreVertical className="w-4 h-4" />
 
             {showMenu && (
               <div
-                className={`absolute right-0 top-6 ${cardBg} border ${borderColor} rounded-lg shadow-lg py-1 z-10 min-w-32`}
+                className={`absolute right-0 top-6 bg-black/40 border border-green-700 rounded-lg shadow-lg py-1 z-10 min-w-32`}
               >
                 <button
                   onClick={() => {
                     onEdit(item);
                     setShowMenu(false);
                   }}
-                  className={`w-full flex items-center space-x-2 px-3 py-2 text-sm ${textSecondary} ${hoverBg}`}
+                  className={`w-full flex items-center space-x-2 px-3 py-2 text-sm text-white bg-green-950`}
                 >
                   <Edit className="w-4 h-4" />
                   <span>Edit</span>
@@ -133,7 +127,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-full flex items-center space-x-2 px-3 py-2 text-sm ${textSecondary} ${hoverBg}`}
+                    className={`w-full flex items-center space-x-2 px-3 py-2 text-sm text-white bg-green-950`}
                     onClick={() => setShowMenu(false)}
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -141,7 +135,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
                   </a>
                 )}
                 <button
-                  className={`w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-500 ${hoverBg}`}
+                  className={`w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-500 bg-green-950`}
                 >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete</span>
@@ -153,7 +147,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
 
         {/* Description */}
         {item.description && (
-          <p className={`text-sm ${textSecondary} mb-3 line-clamp-2`}>
+          <p className={`text-sm text-white mb-3 line-clamp-2`}>
             {item.description}
           </p>
         )}
@@ -161,14 +155,14 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
         {/* Category and Priority */}
         <div className="flex items-center space-x-2 mb-3">
           <span
-            className={`text-xs px-2 py-1 rounded-full ${textSecondary} bg-gray-100 dark:bg-background`}
+            className={`text-xs px-2 py-1 rounded-full text-white bg-blue-950 dark:bg-background`}
           >
             {item.category}
           </span>
           <span
             className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(
               item.priority
-            )} bg-gray-100 dark:bg-background`}
+            )} bg-green-950`}
           >
             {item.priority} priority
           </span>
@@ -177,7 +171,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
         {/* Price */}
         {item.price && (
           <div className="mb-3">
-            <span className={`text-lg font-bold ${textPrimary}`}>
+            <span className={`text-lg font-bold text-white`}>
               ${item.price.toLocaleString()}
             </span>
           </div>
@@ -185,16 +179,14 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
 
         {/* Notes */}
         {item.notes && (
-          <p className={`text-xs ${textSecondary} mb-3 line-clamp-2`}>
-            {item.notes}
-          </p>
+          <p className={`text-xs text-white mb-3 line-clamp-2`}>{item.notes}</p>
         )}
 
         {/* Quick Actions */}
         <div className="flex space-x-1">
           {item.status !== "purchased" && (
             <button
-              onClick={() => onStatusChange(item.id, "purchased")}
+              onClick={() => onStatusChange(item._id, "purchased")}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs py-2 px-2 rounded transition-colors"
             >
               Mark Purchased
@@ -202,7 +194,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
           )}
           {item.status !== "planned" && item.status !== "purchased" && (
             <button
-              onClick={() => onStatusChange(item.id, "planned")}
+              onClick={() => onStatusChange(item._id, "planned")}
               className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-xs py-2 px-2 rounded transition-colors"
             >
               Plan to Buy
@@ -210,7 +202,7 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
           )}
           {item.status !== "wishlist" && item.status !== "purchased" && (
             <button
-              onClick={() => onStatusChange(item.id, "wishlist")}
+              onClick={() => onStatusChange(item._id, "wishlist")}
               className="flex-1 bg-pink-500 hover:bg-pink-600 text-white text-xs py-2 px-2 rounded transition-colors"
             >
               Add to Wishlist
@@ -221,8 +213,8 @@ export const ShoppingItemCard: React.FC<ShoppingItemCardProps> = ({
         {/* Purchase Date */}
         {item.status === "purchased" && item.datePurchased && (
           <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-            <p className={`text-xs ${textSecondary}`}>
-              Purchased on {item.datePurchased.toLocaleDateString()}
+            <p className={`text-xs text-white`}>
+              {/* Purchased on {item.datePurchased.toLocaleDateString()} */}
             </p>
           </div>
         )}

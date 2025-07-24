@@ -2,12 +2,11 @@
 import React from "react";
 
 import { mockProjects } from "@/app/data/mockData";
-import { Bell, Calendar, LogOut, Search, Settings } from "lucide-react";
+import { useSetUrl } from "@/app/hooks/useSeturl";
+import { Bell, Calendar, LogOut, Settings } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
-import { useSetUrl } from "@/app/hooks/useSeturl";
-import Input from "@/app/ui/Input";
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();
@@ -24,8 +23,13 @@ export const Header: React.FC = () => {
     if (currentProject) {
       return currentProject.name;
     }
-    if (activeSection === "/movies") return "Movies";
-    return "Zentry";
+    const result =
+      activeSection === "/movies"
+        ? "Movies"
+        : activeSection === "/shopping"
+        ? "Shopping List"
+        : "Zentry";
+    return result;
   };
   return (
     <header className={` border-b border-green-400 bg-black px-6 py-4`}>
@@ -40,13 +44,15 @@ export const Header: React.FC = () => {
                   style={{ backgroundColor: currentProject.color }}
                 />
               )}
-              <span className="text-white">{getHeaderTitle()}</span>
+              <span className="text-white vindey">{getHeaderTitle()}</span>
             </h1>
             <h5 className={`text-sm hidden md:block text-green-100`}>
               {currentProject
                 ? "Last update on Jan 19, 2024 - 09:16 AM"
                 : activeSection === "/movies"
                 ? "Track and organize your movie watchlist"
+                : activeSection === "/shopping"
+                ? "Manage your shopping items and purchases"
                 : "Manage your tasks, movies, shopping, and expenses"}
             </h5>
           </div>
@@ -54,8 +60,6 @@ export const Header: React.FC = () => {
 
         {/* Actions */}
         <div className="flex items-center space-x-4">
-          <Input Icon={Search} placeholder="Search..." />
-
           {/* Action Buttons */}
           <div className="flex text-white items-center space-x-2">
             <div className="hidden md:block">
@@ -74,8 +78,8 @@ export const Header: React.FC = () => {
             <div className="flex items-center space-x-3 ml-4">
               <div className="relative w-10 h-10">
                 <Image
-                  src={user?.avatar}
-                  alt={user?.name}
+                  src={(user?.avatar as string) || "/default-avatar.jpeg"}
+                  alt={(user?.name as string) || "User Avatar"}
                   fill
                   className="object-cover rounded-full"
                 />

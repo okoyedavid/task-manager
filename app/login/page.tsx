@@ -42,8 +42,8 @@ const LoginPage: React.FC = () => {
           />
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="absolute inset-0 z-10 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-8xl">Zentry</h1>
+            <div className=" text-white">
+              <h1 className="text-center text-8xl">Zentry</h1>
               <p>Welcome back, Login to your account to continue</p>
 
               <div className="md:hidden rounded-2xl mt-6 max-w-md w-full border border-green-400/20 bg-black/40 backdrop-blur-xl p-4 md:p-8">

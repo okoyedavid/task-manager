@@ -92,7 +92,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
             <label className={`block text-sm font-medium text-white mb-2`}>
               Search for a movie
             </label>
-            <div className="flex space-x-2">
+            <div className="flex flex-col md:flex-row space-y-3 space-x-2">
               <Input
                 Icon={Search}
                 type="text"
@@ -105,7 +105,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as "movie" | "tv")}
-                className={`px-4 py-2 rounded-lg text-white border border-green-400 focus:outline-none bg-black/40 backdrop-blur-lg focus:ring-2 focus:ring-green-500`}
+                className=" px-4 w-full py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value={"movie"}>Movie</option>
                 <option value={"tv"}>Tv Show</option>
@@ -139,7 +139,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                         }`}
                         height={96}
                         width={64}
-                        alt={movie.title}
+                        alt={`photo of ${movie.title || movie.title}`}
                         className="w-16 h-24 object-cover rounded"
                       />
                       <div className="flex-1 min-w-0">
@@ -182,7 +182,9 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                     src={`https://image.tmdb.org/t/p/w500/${
                       selectedMovie.poster_path || selectedMovie.backdrop_path
                     }`}
-                    alt={selectedMovie.title}
+                    alt={`photo of ${
+                      selectedMovie.title || selectedMovie.title
+                    }`}
                     className="w-24 h-36 object-cover rounded"
                   />
                   <div className="flex-1">
@@ -227,7 +229,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
                         status: e.target.value as Movie["status"],
                       }))
                     }
-                    className={`w-full px-3 py-2 rounded-lg bg-green-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className=" px-4 w-fit py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
                   >
                     <option value="to-watch">To Watch</option>
                     <option value="watched">Watched</option>

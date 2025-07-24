@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { X, DollarSign, Calendar, Repeat } from "lucide-react";
 import { Expense } from "../types";
 import { expenseCategories } from "../data/expensesData";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
 
 interface AddExpenseModalProps {
   onClose: () => void;
@@ -13,7 +15,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const theme = "dark";
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -24,12 +25,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     recurring: false,
     recurringPeriod: "monthly" as Expense["recurringPeriod"],
   });
-
-  const modalBg = theme === "dark" ? "bg-background-dark" : "bg-white";
-  const textPrimary = theme === "dark" ? "text-white" : "text-gray-900";
-  const textSecondary = theme === "dark" ? "text-gray-400" : "text-gray-600";
-  const inputBg = theme === "dark" ? "bg-background" : "bg-gray-100";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
 
   const availableCategories = expenseCategories.filter(
     (cat) => cat.type === formData.type || cat.type === "both"
@@ -55,33 +50,35 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-lg bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div
-        className={`${modalBg} rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
+        className={`border border-green-400/20 bg-black/60 backdrop-blur-xl shadow-[0_0_10px_#00ff88aa] p-6
+          rounded-lg w-full max-w-lg max-h-[95vh] overflow-y-auto`}
       >
         {/* Header */}
         <div
-          className={`flex items-center justify-between p-6 border-b ${borderColor}`}
+          className={`flex items-center justify-between p-6 border-b border-green-700`}
         >
-          <h2 className={`text-xl font-semibold ${textPrimary}`}>
+          <h2 className={`text-xl font-semibold text-white`}>
             Add Transaction
           </h2>
           <button
             onClick={onClose}
-            className={`p-2 rounded-lg hover:${inputBg} ${textSecondary} hover:${textPrimary} transition-colors`}
+            className={`p-2 rounded-lg hover:bg-green-900 text-green-50 hover:text-white transition-colors`}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="py-6  space-y-6">
           {/* Transaction Type */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Transaction Type
             </label>
             <div className="grid grid-cols-2 gap-2">
-              <button
+              <Button
+                variant="outline"
                 onClick={() =>
                   setFormData((prev) => ({
                     ...prev,
@@ -90,13 +87,12 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                   }))
                 }
                 className={`p-3 rounded-lg border-2 transition-colors ${
-                  formData.type === "income"
-                    ? "border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-                    : `border-gray-300 dark:border-gray-600 ${textSecondary} hover:${textPrimary}`
+                  formData.type === "income" &&
+                  "border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300"
                 }`}
               >
                 Income
-              </button>
+              </Button>
               <button
                 onClick={() =>
                   setFormData((prev) => ({
@@ -108,7 +104,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                 className={`p-3 rounded-lg border-2 transition-colors ${
                   formData.type === "expense"
                     ? "border-red-500 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300"
-                    : `border-gray-300 dark:border-gray-600 ${textSecondary} hover:${textPrimary}`
+                    : `border-gray-300 dark:border-gray-600 text-green-50 hover:text-white`
                 }`}
               >
                 Expense
@@ -118,16 +114,15 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
           {/* Title */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Title *
             </label>
-            <input
+            <Input
               type="text"
               value={formData.title}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter transaction title..."
               autoFocus
             />
@@ -136,16 +131,14 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           {/* Amount and Date */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Amount *
               </label>
               <div className="relative">
                 <DollarSign
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${textSecondary}`}
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-50`}
                 />
-                <input
+                <Input
                   type="number"
                   step="0.01"
                   min="0"
@@ -153,37 +146,30 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, amount: e.target.value }))
                   }
-                  className={`w-full pl-10 pr-4 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="0.00"
                 />
               </div>
             </div>
 
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Date
               </label>
-              <div className="relative">
-                <Calendar
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${textSecondary}`}
-                />
-                <input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, date: e.target.value }))
-                  }
-                  className={`w-full pl-10 pr-4 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                />
-              </div>
+
+              <Input
+                Icon={Calendar}
+                type="date"
+                value={formData.date}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, date: e.target.value }))
+                }
+              />
             </div>
           </div>
 
           {/* Category */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Category
             </label>
             <select
@@ -191,7 +177,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, category: e.target.value }))
               }
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className=" px-4 w-full py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
             >
               {availableCategories.map((category) => (
                 <option key={category.id} value={category.name.toLowerCase()}>
@@ -203,7 +189,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
           {/* Description */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Description
             </label>
             <textarea
@@ -215,7 +201,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                 }))
               }
               rows={3}
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className=" px-4 w-full py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               placeholder="Enter transaction description..."
             />
           </div>
@@ -223,7 +209,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           {/* Recurring */}
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <input
+              <Input
                 type="checkbox"
                 id="recurring"
                 checked={formData.recurring}
@@ -233,11 +219,10 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                     recurring: e.target.checked,
                   }))
                 }
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
               <label
                 htmlFor="recurring"
-                className={`text-sm font-medium ${textPrimary} flex items-center space-x-1`}
+                className={`text-sm font-medium text-white flex items-center space-x-1`}
               >
                 <Repeat className="w-4 h-4" />
                 <span>Recurring Transaction</span>
@@ -250,10 +235,13 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    recurringPeriod: e.target.value as any,
+                    recurringPeriod: e.target.value as
+                      | "weekly"
+                      | "monthly"
+                      | "yearly",
                   }))
                 }
-                className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className=" px-4 w-full py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
@@ -265,21 +253,17 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
         {/* Footer */}
         <div
-          className={`flex items-center justify-end space-x-3 p-6 border-t ${borderColor}`}
+          className={`flex items-center justify-end space-x-3 p-6 border-t border-green-700`}
         >
-          <button
-            onClick={onClose}
-            className={`px-4 py-2 rounded-lg ${inputBg} ${textSecondary} hover:${textPrimary} transition-colors`}
-          >
+          <Button variant="secondary" onClick={onClose}>
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={!formData.title.trim() || !formData.amount}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors"
           >
             Add Transaction
-          </button>
+          </Button>
         </div>
       </div>
     </div>

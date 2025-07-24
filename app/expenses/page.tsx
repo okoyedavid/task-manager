@@ -7,9 +7,9 @@ import { Expense } from "../types";
 import { ExpenseChart } from "./ExpenseChart";
 import { ExpenseCard } from "./ExpenseCard";
 import { AddExpenseModal } from "./AddExpenseModal";
+import Button from "../ui/Button";
 
 const ExpensesPage: React.FC = () => {
-  const theme = "dark";
   const [expenses] = useState<Expense[]>(mockExpenses);
   const [selectedPeriod, setSelectedPeriod] = useState<
     "week" | "month" | "year"
@@ -18,12 +18,6 @@ const ExpensesPage: React.FC = () => {
     "all" | "income" | "expense"
   >("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  const pageBg = theme === "dark" ? "bg-background" : "bg-gray-100";
-  const cardBg = theme === "dark" ? "bg-background-dark" : "bg-white";
-  const textPrimary = theme === "dark" ? "text-white" : "text-gray-900";
-  const textSecondary = theme === "dark" ? "text-gray-400" : "text-gray-600";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
 
   const filteredExpenses = expenses.filter((expense) => {
     if (selectedType === "all") return true;
@@ -68,23 +62,18 @@ const ExpensesPage: React.FC = () => {
   ];
 
   return (
-    <div className={`min-h-full ${pageBg} p-6`}>
+    <div className={`min-h-full p-6`}>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className={`text-3xl font-bold ${textPrimary} mb-2`}>
-              Expenses
-            </h1>
-            <p className={`${textSecondary}`}>Track your income and expenses</p>
+            <h1 className={`text-3xl font-bold text-white mb-2`}>Expenses</h1>
+            <p className="text-green-50">Track your income and expenses</p>
           </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-          >
+          <Button onClick={() => setIsAddModalOpen(true)} className="flex">
             <Plus className="w-5 h-5" />
             <span>Add Transaction</span>
-          </button>
+          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -94,14 +83,14 @@ const ExpensesPage: React.FC = () => {
             return (
               <div
                 key={stat.title}
-                className={`${cardBg} rounded-lg p-6 border ${borderColor}`}
+                className={`border bg-green-950/90 p-6 my-4 border-green-400/20 backdrop-blur-xl rounded-lg cursor-pointer overflow-hidden  transition-all duration-200 group shadow-[0_0_1px_1px_rgba(0,255,0,0.8)] hover:shadow-[0_0_5px_2px_rgba(0,255,0,0.9)]`}
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className={`text-sm font-medium ${textSecondary} mb-1`}>
+                    <p className={`text-sm font-medium text-green-50 mb-1`}>
                       {stat.title}
                     </p>
-                    <p className={`text-3xl font-bold ${textPrimary}`}>
+                    <p className={`text-3xl font-bold text-white`}>
                       ${Math.abs(stat.value).toLocaleString()}
                     </p>
                   </div>
@@ -115,52 +104,53 @@ const ExpensesPage: React.FC = () => {
         </div>
 
         {/* Chart */}
-        <div className={`${cardBg} rounded-lg p-6 border ${borderColor} mb-8`}>
+        <div
+          className={`border p-6 my-4 border-green-400/20 bg-green-950/10 backdrop-blur-xl rounded-lg cursor-pointer overflow-hidden  transition-all duration-200 group shadow-[0_0_1px_1px_rgba(0,255,0,0.8)] hover:shadow-[0_0_5px_2px_rgba(0,255,0,0.9)]`}
+        >
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-semibold ${textPrimary}`}>
+            <h2 className={`text-xl font-semibold text-white`}>
               Financial Overview
             </h2>
-            <div className="flex space-x-2">
-              {["week", "month", "year"].map((period) => (
-                <button
-                  key={period}
-                  onClick={() => setSelectedPeriod(period as any)}
-                  className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                    selectedPeriod === period
-                      ? "bg-blue-500 text-white"
-                      : `${textSecondary} hover:${textPrimary} hover:bg-gray-100 dark:hover:bg-background`
-                  }`}
-                >
-                  {period.charAt(0).toUpperCase() + period.slice(1)}
-                </button>
-              ))}
+            <div className="flex gap-4">
+              <div className="flex border overflow-hidden border-green-900 rounded-lg">
+                {["week", "month", "year"].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() =>
+                      setSelectedPeriod(period as "week" | "month" | "year")
+                    }
+                    className={`px-3 py-1 text-sm transition-colors ${
+                      selectedPeriod === period
+                        ? "bg-green-500 text-white"
+                        : `text-green-50 hover:text-white hover:bg-green-950 dark:hover:bg-background`
+                    }`}
+                  >
+                    {period.charAt(0).toUpperCase() + period.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <select
+                value={selectedType}
+                onChange={(e) =>
+                  setSelectedType(
+                    e.target.value as "all" | "income" | "expense"
+                  )
+                }
+                className=" px-4 w-fit py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+              >
+                <option value="all">All Transactions</option>
+                <option value="income">Income Only</option>
+                <option value="expense">Expenses Only</option>
+              </select>
             </div>
           </div>
           <ExpenseChart expenses={expenses} period={selectedPeriod} />
-        </div>
-
-        {/* Filters */}
-        <div className={`${cardBg} rounded-lg p-4 border ${borderColor} mb-6`}>
-          <div className="flex items-center space-x-4">
-            <span className={`text-sm font-medium ${textPrimary}`}>
-              Filter by:
-            </span>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value as any)}
-              className={`px-3 py-2 rounded-lg bg-gray-100 dark:bg-background ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            >
-              <option value="all">All Transactions</option>
-              <option value="income">Income Only</option>
-              <option value="expense">Expenses Only</option>
-            </select>
-          </div>
         </div>
       </div>
 
       {/* Transactions List */}
       <div className="space-y-4">
-        <h2 className={`text-xl font-semibold ${textPrimary} mb-4`}>
+        <h2 className={`text-xl font-semibold text-white mb-4`}>
           Recent Transactions
         </h2>
         {filteredExpenses.map((expense) => (
@@ -176,9 +166,7 @@ const ExpensesPage: React.FC = () => {
 
       {filteredExpenses.length === 0 && (
         <div className="text-center py-12">
-          <p className={`text-lg ${textSecondary} mb-4`}>
-            No transactions found
-          </p>
+          <p className={`text-lg text-green-50 mb-4`}>No transactions found</p>
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="text-blue-500 hover:text-blue-600 font-medium"

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 
-import { X, DollarSign, Tag, Flag } from "lucide-react";
-import { ShoppingItem } from "../types";
+import { DollarSign, X } from "lucide-react";
 import { shoppingCategories } from "../data/shoppingData";
+import { ShoppingItem } from "../types";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 interface AddShoppingItemModalProps {
   onClose: () => void;
@@ -13,7 +15,6 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const theme = "dark";
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -24,12 +25,6 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
     url: "",
     notes: "",
   });
-
-  const modalBg = theme === "dark" ? "bg-background-dark" : "bg-white";
-  const textPrimary = theme === "dark" ? "text-white" : "text-gray-900";
-  const textSecondary = theme === "dark" ? "text-gray-400" : "text-gray-600";
-  const inputBg = theme === "dark" ? "bg-background" : "bg-gray-100";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
 
   const handleSave = () => {
     if (!formData.name.trim()) return;
@@ -51,20 +46,20 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0  bg-opacity-50 backdrop-blur-lg flex items-center justify-center z-50 p-4">
       <div
-        className={`${modalBg} rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
+        className={`shadow-[0_0_7px_4px_rgba(0,255,0,0.9)] bg-black/40  rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
       >
         {/* Header */}
         <div
-          className={`flex items-center justify-between p-6 border-b ${borderColor}`}
+          className={`flex items-center justify-between p-6 border-b border-green-700`}
         >
-          <h2 className={`text-xl font-semibold ${textPrimary}`}>
+          <h2 className={`text-xl font-semibold text-white`}>
             Add Shopping Item
           </h2>
           <button
             onClick={onClose}
-            className={`p-2 rounded-lg hover:${inputBg} ${textSecondary} hover:${textPrimary} transition-colors`}
+            className={`p-2 rounded-lg hover:black/40 text-green-50 hover:text-white transition-colors`}
           >
             <X className="w-5 h-5" />
           </button>
@@ -73,16 +68,15 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
         <div className="p-6 space-y-6">
           {/* Item Name */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Item Name *
             </label>
-            <input
+            <Input
               type="text"
               value={formData.name}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter item name..."
               autoFocus
             />
@@ -90,7 +84,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
 
           {/* Description */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Description
             </label>
             <textarea
@@ -102,7 +96,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                 }))
               }
               rows={3}
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className=" pr-4 py-3 rounded-lg bg-black/60 text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent w-full pl-4"
               placeholder="Enter item description..."
             />
           </div>
@@ -110,16 +104,14 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
           {/* Price and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Price
               </label>
               <div className="relative">
                 <DollarSign
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${textSecondary}`}
+                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-50`}
                 />
-                <input
+                <Input
                   type="number"
                   step="0.01"
                   min="0"
@@ -127,16 +119,13 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, price: e.target.value }))
                   }
-                  className={`w-full pl-10 pr-4 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="0.00"
                 />
               </div>
             </div>
 
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Category
               </label>
               <select
@@ -144,7 +133,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, category: e.target.value }))
                 }
-                className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className=" pr-4 w-auto py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 {shoppingCategories.map((category) => (
                   <option key={category} value={category}>
@@ -158,9 +147,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
           {/* Priority and Status */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Priority
               </label>
               <select
@@ -171,7 +158,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                     priority: e.target.value as ShoppingItem["priority"],
                   }))
                 }
-                className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className=" pr-4 w-auto py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -180,9 +167,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
             </div>
 
             <div>
-              <label
-                className={`block text-sm font-medium ${textPrimary} mb-2`}
-              >
+              <label className={`block text-sm font-medium text-white mb-2`}>
                 Status
               </label>
               <select
@@ -193,7 +178,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                     status: e.target.value as ShoppingItem["status"],
                   }))
                 }
-                className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className=" pr-4 w-auto py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value="wishlist">Wishlist</option>
                 <option value="planned">Planned</option>
@@ -204,23 +189,22 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
 
           {/* URL */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Product URL (Optional)
             </label>
-            <input
+            <Input
               type="url"
               value={formData.url}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, url: e.target.value }))
               }
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="https://..."
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
+            <label className={`block text-sm font-medium text-white mb-2`}>
               Notes
             </label>
             <textarea
@@ -229,7 +213,7 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
                 setFormData((prev) => ({ ...prev, notes: e.target.value }))
               }
               rows={3}
-              className={`w-full px-3 py-2 rounded-lg ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className=" pr-4 py-3 rounded-lg bg-black/60 text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent w-full pl-4"
               placeholder="Add any additional notes..."
             />
           </div>
@@ -237,21 +221,14 @@ export const AddShoppingItemModal: React.FC<AddShoppingItemModalProps> = ({
 
         {/* Footer */}
         <div
-          className={`flex items-center justify-end space-x-3 p-6 border-t ${borderColor}`}
+          className={`flex items-center justify-end space-x-3 p-6 border-t border-green-700`}
         >
-          <button
-            onClick={onClose}
-            className={`px-4 py-2 rounded-lg ${inputBg} ${textSecondary} hover:${textPrimary} transition-colors`}
-          >
+          <Button variant="outline" onClick={onClose}>
             Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={!formData.name.trim()}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors"
-          >
+          </Button>
+          <Button onClick={handleSave} disabled={!formData.name.trim()}>
             Add Item
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -6,14 +6,14 @@ import { Movie } from "../types";
 
 interface MovieCardProps {
   movie: Movie;
-  onStatusChange: (movieId: number, status: Movie["status"]) => void;
   onEdit: (movie: Movie) => void;
+  reload: () => void;
 }
 
 export const MovieCard: React.FC<MovieCardProps> = ({
   movie,
-  onStatusChange,
   onEdit,
+  reload,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
 
@@ -24,11 +24,26 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
     const data = await res.json();
     console.log("successfully deleted movie", data);
+    reload();
+  }
+
+  async function handleUpdateStatus(movieId: number, status: Movie["status"]) {
+    const updates = { status };
+
+    const res = await fetch(`http://localhost:4000/movies/${movieId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ updates }),
+    });
+
+    const data = await res.json();
+    console.log("successfully update movie", data);
+    reload();
   }
 
   return (
     <div
-      className={`rounded-lg border bg-black/40 backdrop-blur-lg overflow-hidden  transition-all duration-200 group shadow-[0_0_2px_2px_rgba(0,255,0,0.8)] hover:shadow-[0_0_10px_4px_rgba(0,255,0,0.9)]`}
+      className={`border border-green-400/20 bg-green-950/10 backdrop-blur-xl rounded-lg cursor-pointer overflow-hidden  transition-all duration-200 group shadow-[0_0_1px_1px_rgba(0,255,0,0.8)] hover:shadow-[0_0_5px_2px_rgba(0,255,0,0.9)]`}
     >
       {/* Movie Poster */}
       <div className="relative aspect-square overflow-hidden">
@@ -52,7 +67,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
           {showMenu && (
             <div
-              className={`absolute right-0 top-8 bg-green-950 border border-white  shadow-white hover:shadow-none rounded-lg shadow-md py-1 z-10 min-w-32`}
+              className={`absolute right-0 top-8 bg-black/50 backdrop-blur-lg border border-green-900  rounded-lg shadow-md py-1 z-10 min-w-32`}
             >
               <button
                 onClick={() => {
@@ -94,7 +109,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         {/* User Rating (if watched) */}
         {movie.status === "watched" && movie.vote_average && (
           <div className="flex items-center space-x-1 mb-2">
-            <span className={`text-xs text-green-50`}>Your rating:</span>
+            <span className={`hidden md:block text-xs text-green-50`}>
+              Your rating:
+            </span>
             <div className="flex items-center space-x-1">
               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
               <span className={`text-xs font-medium text-white`}>
@@ -105,10 +122,10 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         )}
 
         {/* Quick Actions */}
-        <div className="flex space-x-1">
+        <div className="flex md:flex-row flex-col space-x-1 space-y-2">
           {movie.status !== "watched" && (
             <button
-              onClick={() => onStatusChange(movie.id, "watched")}
+              onClick={() => handleUpdateStatus(movie.id, "watched")}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs py-1 px-2 rounded transition-colors"
             >
               Mark Watched
@@ -116,7 +133,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           )}
           {movie.status !== "to-watch" && (
             <button
-              onClick={() => onStatusChange(movie.id, "to-watch")}
+              onClick={() => handleUpdateStatus(movie.id, "to-watch")}
               className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-xs py-1 px-2 rounded transition-colors"
             >
               To Watch
@@ -124,7 +141,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           )}
           {movie.status === "watched" && (
             <button
-              onClick={() => onStatusChange(movie.id, "rewatch")}
+              onClick={() => handleUpdateStatus(movie.id, "rewatch")}
               className="flex-1 bg-purple-500 hover:bg-purple-600 text-white text-xs py-1 px-2 rounded transition-colors"
             >
               Rewatch

@@ -17,8 +17,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    status: "todo" as const,
-    priority: "medium" as const,
+    status: "todo",
+    priority: "medium",
     dueDate: "",
     tags: [] as string[],
   });
@@ -28,8 +28,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       setFormData({
         title: task.title,
         description: task.description,
-        status: task.status,
-        priority: task.priority,
+        status: task.status as
+          | "todo"
+          | "in-progress"
+          | "in-review"
+          | "completed",
+        priority: task.priority as "low" | "medium" | "high",
         dueDate: task.dueDate ? task.dueDate : "",
         tags: task.tags,
       });
@@ -39,7 +43,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const handleSave = () => {
     onSave({
       ...formData,
-      dueDate: formData.dueDate ? formData.dueDate : undefined,
+      status: formData.status as
+        | "todo"
+        | "in-progress"
+        | "in-review"
+        | "completed",
+      priority: formData.priority as "low" | "medium" | "high",
+      dueDate: formData.dueDate
+        ? new Date(formData.dueDate).toISOString()
+        : undefined,
     });
   };
 
@@ -114,10 +126,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    status: e.target.value as any,
+                    status: e.target.value,
                   }))
                 }
-                className={`w-full px-3 py-2 rounded-lg bg-black/60 text-white border border-green-50 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent`}
+                className=" pr-4 w-auto py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value="todo">To Do</option>
                 <option value="in-progress">In Progress</option>
@@ -136,10 +148,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    priority: e.target.value as any,
+                    priority: e.target.value,
                   }))
                 }
-                className={`w-full px-3 py-2 rounded-lg bg-black/60 text-white border border-green-50 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent`}
+                className=" pr-4 py-3 w-full rounded-lg bg-black text-white border border-green-200/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>

@@ -21,6 +21,10 @@ label {
   font-family: "vindey", sans-serif;
 }
 
+.vindey {
+  font-family: "vindey", sans-serif;
+}
+
 /* Scrollbar Track */
 ::-webkit-scrollbar {
   width: 8px;

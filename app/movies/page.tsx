@@ -1,19 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import { Plus, Search } from "lucide-react";
-import Input from "../ui/Input";
+import { useSetUrl } from "../hooks/useSeturl";
+import { Movie } from "../types";
 import { AddMovieModal } from "./AddMovieModal";
 import { MovieCard } from "./MovieCard";
-import Button from "../ui/Button";
-import { Movie } from "../types";
+import MoviesFilter from "./MoviesFilter";
+import toast from "react-hot-toast";
 
 const MoviesPage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<
-    "all" | "watched" | "to-watch" | "rewatch"
-  >("all");
+  const [updated, setUpdated] = useState(false);
+
+  const { searchParams } = useSetUrl();
+  const searchQuery = searchParams.get("query") || "";
+  const selectedStatus = searchParams.get("status") || "all";
+  const type = searchParams.get("type") || "all";
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
@@ -21,72 +24,73 @@ const MoviesPage: React.FC = () => {
       const res = await fetch("http://localhost:4000/movies");
       const data = await res.json();
       setMovies(data.movies);
+      setUpdated(false);
     }
 
     handleFetchMovies();
-  });
+  }, [updated]);
 
   if (!movies) return null;
 
   async function handleSave(movieData: Partial<Movie>) {
-    const res = await fetch("http://localhost:4000/movies", {
-      method: "POST",
-      body: JSON.stringify({ movie: movieData }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const res = await fetch("http://localhost:4000/movies", {
+        method: "POST",
+        body: JSON.stringify({ movie: movieData }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = await res.json();
-    console.log("successfully added movie", data);
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data);
+        if (data?.error?.errorResponse?.errmsg?.match(/duplicate key/i)) {
+          toast.error("Movie already added");
+        } else {
+          toast.error(data?.message || "Failed to upload movie");
+        }
+        return;
+      }
+
+      toast.success("Movie added");
+      setUpdated(true);
+    } catch (err) {
+      console.error("Network error:", err);
+      toast.error("Network error. Please try again.");
+    }
   }
 
   const filteredMovies = movies.filter((movie) => {
-    if (!searchQuery) return movies;
+    const matchestype = type === "all" || movie.type === type;
+    const matchesStatus =
+      selectedStatus === "all" || movie.status === selectedStatus;
+
+    if (!searchQuery) return matchestype && matchesStatus;
+
     const matchesSearch = movie?.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      selectedStatus === "all" || movie.status === selectedStatus;
+
     // const matchesGenre =
     //   selectedGenre === "all" || movie.genre.includes(selectedGenre);
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchestype;
     // && matchesGenre;
   });
 
   return (
-    <div className={`min-h-full p-6`}>
+    <div className={`min-h-full py-6 px-2 md:p-6`}>
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between gap-3 mb-6">
-          <form className="relative flex-1">
-            <Input
-              type="text"
-              placeholder="Search movies..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              Icon={Search}
-            />
-          </form>
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3.5 rounded-lg transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add Movie</span>
-          </Button>
-        </div>
-      </div>
+
+      <MoviesFilter setIsAddModalOpen={setIsAddModalOpen} />
 
       {/* Movies Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
         {filteredMovies.map((movie) => (
           <MovieCard
             key={movie.id}
             movie={movie}
-            onStatusChange={(movieId, status) => {
-              console.log("Status changed:", movieId, status);
-            }}
+            reload={() => setUpdated(true)}
             onEdit={(movie) => {
               console.log("Edit movie:", movie);
             }}

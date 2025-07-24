@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 import { FolderPlus, X } from "lucide-react";
+import Input from "@/app/ui/Input";
+import Button from "@/app/ui/Button";
 
 type projectprops = {
   name: string;
@@ -71,13 +73,12 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <label className={`block text-sm font-medium text-white mb-2`}>
               Project Name
             </label>
-            <input
+            <Input
               type="text"
               value={formData.name}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className={`w-full px-3 py-2 rounded-lg bg-black/60 text-white border border-green-50 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent`}
               placeholder="Enter project name..."
               autoFocus
             />
@@ -128,19 +129,16 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <div
           className={`flex items-center justify-end space-x-3 p-6 border-t border-green-700`}
         >
-          <button
-            onClick={onClose}
-            className={`px-4 py-2 rounded-lg text-red-400 hover:text-white transition-colors`}
-          >
+          <Button variant="secondary" onClick={onClose}>
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={!formData.name.trim()}
             className="px-4 py-2 text-white rounded-lg hover:text-green-50 font-medium bg-green-800 disabled:bg-green-700 disabled:cursor-not-allowed transition-colors"
           >
             Create Project
-          </button>
+          </Button>
         </div>
       </div>
     </div>
