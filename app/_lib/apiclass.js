@@ -1,6 +1,6 @@
 export class HandleApiCalls {
   constructor(url) {
-    // not sure but i think am assigning url to the global this.url
+    // bind the url to this for global use
     this.url = url;
   }
 
@@ -52,7 +52,7 @@ export class HandleApiCalls {
         localStorage.setItem("token", newAccessToken);
 
         // Retry original request with new access token
-        return this.fetchAuthData(subroute, updates, retryCount + 1);
+        return this.fetchAuthData(subroute, method, updates, retryCount + 1);
       }
     } else {
       return res;

@@ -4,13 +4,9 @@ import { Expense } from "../types";
 
 interface ExpenseChartProps {
   expenses: Expense[];
-  period: "week" | "month" | "year";
 }
 
-export const ExpenseChart: React.FC<ExpenseChartProps> = ({
-  expenses,
-  period,
-}) => {
+export const ExpenseChart: React.FC<ExpenseChartProps> = ({ expenses }) => {
   const theme = "dark";
 
   const textPrimary = theme === "dark" ? "text-white" : "text-gray-900";
@@ -83,11 +79,6 @@ export const ExpenseChart: React.FC<ExpenseChartProps> = ({
             ${Math.abs(totalIncome - totalExpenses).toLocaleString()}
           </span>
         </div>
-      </div>
-
-      {/* Period Info */}
-      <div className={`text-center text-xs ${textSecondary}`}>
-        Showing data for the current {period}
       </div>
     </div>
   );
