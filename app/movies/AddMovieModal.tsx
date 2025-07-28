@@ -105,7 +105,7 @@ export const AddMovieModal: React.FC<AddMovieModalProps> = ({
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as "movie" | "tv")}
-                className=" px-4 w-full py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                className=" px-4 w-auto py-3 rounded-lg bg-black text-white border border-green-500/30 placeholder-green-50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
               >
                 <option value={"movie"}>Movie</option>
                 <option value={"tv"}>Tv Show</option>

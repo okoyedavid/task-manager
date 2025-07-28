@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
+import { useSetUrl } from "@/app/hooks/useSeturl";
 import {
   Archive,
   Calendar,
@@ -14,12 +15,10 @@ import {
   ShoppingCart,
   Tag,
   Trash2,
-  Users,
 } from "lucide-react";
-import { mockCategories, mockProjects } from "../../data/mockData";
-import { useSetUrl } from "@/app/hooks/useSeturl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { mockCategories, mockProjects } from "../../data/mockData";
 import { CreateProjectModal } from "../Modals/CreateProjectModal";
 
 export const Sidebar: React.FC = () => {
@@ -201,12 +200,6 @@ export const Sidebar: React.FC = () => {
 
         {/* Bottom Navigation */}
         <div className="mt-auto p-4 space-y-1 border-t border-gray-700">
-          <button
-            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg "hover:bg-green-950" text-gray-50 hover:text-green-200 transition-colors`}
-          >
-            <Users className="w-4 h-4" />
-            <span className="text-sm">Team</span>
-          </button>
           <button
             className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg "hover:bg-green-950" text-gray-50 hover:text-green-200 transition-colors`}
           >

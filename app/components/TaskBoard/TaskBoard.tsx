@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Task } from "../../types";
 import { TaskModal } from "../Modals/TaskModal";
 import { TaskColumn } from "./TaskColumn";
+import api from "@/app/_lib/apiclass";
 
 export const TaskBoard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     const handleFetchTask = async () => {
-      console.log("called");
-      const data = await fetch("http://localhost:4000/tasks");
+      const data = await api.fetchData("/tasks");
 
-      const response = await data.json();
-      setTasks(response.tasks);
+      setTasks(data.tasks);
     };
 
     handleFetchTask();

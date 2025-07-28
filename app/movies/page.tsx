@@ -7,6 +7,7 @@ import { AddMovieModal } from "./AddMovieModal";
 import { MovieCard } from "./MovieCard";
 import MoviesFilter from "./MoviesFilter";
 import toast from "react-hot-toast";
+import api from "../_lib/apiclass";
 
 const MoviesPage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>();
@@ -21,8 +22,7 @@ const MoviesPage: React.FC = () => {
 
   useEffect(() => {
     async function handleFetchMovies() {
-      const res = await fetch("http://localhost:4000/movies");
-      const data = await res.json();
+      const data = await api.fetchData("/movies");
       setMovies(data.movies);
       setUpdated(false);
     }
@@ -32,19 +32,13 @@ const MoviesPage: React.FC = () => {
 
   if (!movies) return null;
 
-  async function handleSave(movieData: Partial<Movie>) {
+  async function handleSave(movie: Partial<Movie>) {
     try {
-      const res = await fetch("http://localhost:4000/movies", {
-        method: "POST",
-        body: JSON.stringify({ movie: movieData }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const res = await api.fetchAuthData(`/movies`, "POST", {
+        movie,
       });
-
       const data = await res.json();
       if (!res.ok) {
-        console.log(data);
         if (data?.error?.errorResponse?.errmsg?.match(/duplicate key/i)) {
           toast.error("Movie already added");
         } else {

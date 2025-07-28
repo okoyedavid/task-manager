@@ -17,7 +17,7 @@ export default function Button({
   ...rest
 }: ButtonProps) {
   const baseClasses =
-    "px-6 py-2 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95";
+    "px-6 py-2  rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95";
 
   const variantClasses = {
     primary:

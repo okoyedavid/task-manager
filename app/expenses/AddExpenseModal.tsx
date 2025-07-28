@@ -134,21 +134,17 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
               <label className={`block text-sm font-medium text-white mb-2`}>
                 Amount *
               </label>
-              <div className="relative">
-                <DollarSign
-                  className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-50`}
-                />
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.amount}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, amount: e.target.value }))
-                  }
-                  placeholder="0.00"
-                />
-              </div>
+              <Input
+                Icon={DollarSign}
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.amount}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, amount: e.target.value }))
+                }
+                placeholder="0.00"
+              />
             </div>
 
             <div>
@@ -209,7 +205,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
           {/* Recurring */}
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <Input
+              <input
                 type="checkbox"
                 id="recurring"
                 checked={formData.recurring}

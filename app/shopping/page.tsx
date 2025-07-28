@@ -6,6 +6,7 @@ import { AddShoppingItemModal } from "./AddShoppingItemModal";
 import Filters from "./Filters";
 import { ShoppingItemCard } from "./ShoppingItemCard";
 import { useSetUrl } from "../hooks/useSeturl";
+import api from "../_lib/apiclass";
 
 const ShoppingPage: React.FC = () => {
   const [items, setItems] = useState<ShoppingItem[]>([]);
@@ -13,9 +14,8 @@ const ShoppingPage: React.FC = () => {
 
   useEffect(() => {
     async function fetchItems() {
-      const res = await fetch("http://localhost:4000/shopping");
-      const data = await res.json();
-      setItems(data.items);
+      const res = await api.fetchData("/shopping");
+      setItems(res.items);
     }
 
     fetchItems();

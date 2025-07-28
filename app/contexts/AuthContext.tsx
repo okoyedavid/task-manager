@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string): Promise<boolean> => {
     const data = await fetch("http://localhost:4000/auth", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email,
@@ -52,7 +53,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         if (data.message !== "Login successful") {
           console.error(`Error while logging in user Error: ${data.message}`);
           return data.message;

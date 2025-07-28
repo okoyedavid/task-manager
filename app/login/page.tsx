@@ -3,6 +3,7 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -12,11 +13,13 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-
+    router.push("/");
     try {
       const success = await login(email, password);
       if (!success) {

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Edit, MoreVertical, Star, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Movie } from "../types";
+import api from "../_lib/apiclass";
+import toast from "react-hot-toast";
 
 interface MovieCardProps {
   movie: Movie;
@@ -18,27 +20,24 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   const [showMenu, setShowMenu] = useState(false);
 
   async function handleDelete() {
-    const res = await fetch(`http://localhost:4000/movies/${movie.id}`, {
-      method: "DELETE",
-    });
-
-    const data = await res.json();
-    console.log("successfully deleted movie", data);
-    reload();
+    try {
+      await api.fetchAuthData(`/movies/${movie.id}`, "DELETE", null);
+      toast.error("successfully deleted movie");
+      reload();
+    } catch (err) {
+      console.error("deleting movie failed:", err);
+      toast.error("Failed to delete movie");
+    }
   }
 
   async function handleUpdateStatus(movieId: number, status: Movie["status"]) {
-    const updates = { status };
-
-    const res = await fetch(`http://localhost:4000/movies/${movieId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ updates }),
-    });
-
-    const data = await res.json();
-    console.log("successfully update movie", data);
-    reload();
+    try {
+      await api.fetchAuthData(`/movies/${movieId}`, "PUT", { status });
+      reload();
+    } catch (err) {
+      console.error("Status update failed:", err);
+      toast.error("Could not update movie status");
+    }
   }
 
   return (
